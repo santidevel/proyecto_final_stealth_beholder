@@ -1,6 +1,12 @@
 # Proyecto en grupo Stealth Beholder
 
-# IMPORTANTE: Intentemos seguir esta estructura del proyecto:
+# Fecha de entrega 17/04/2026
+
+# - IMPORTANTE - 
+## Usaremos Python 3.10.11 para mayor compatibilidad con Tensorflow y Docker.
+## Recomiendo usar PyCharm, pero usad el IDE que os guste.
+## Si queréis usar ramas distintas podéis, pero recomiendo trabajar sobre el main porque las tareas serán diferentes y no deberían de dar conflictos.
+## Ejemplo de la estructura del proyecto:
 
 ```
 stealth-beholder/
@@ -43,7 +49,9 @@ stealth-beholder/
 ## Documento del proyecto:
 https://docs.google.com/document/d/1CSbMesr25Kp_Y2aJIR1nYDvv6XPtwEqfTmDE1_uJAGc/edit?usp=sharing
 
-# Parte 1: Dennis y Borja
+## URL a las tareas en Trello (En proceso):
+
+# Parte 1: Borja y Javi
 
 # Parte 2: Dennis
 
