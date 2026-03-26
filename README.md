@@ -48,6 +48,9 @@ stealth-beholder/
     └── informe.md
 ```
 
+## Documento original Aules:
+[Ver informe](docs/ProyectoFinalDocAules.pdf)
+
 ## Documento del proyecto:
 https://docs.google.com/document/d/1CSbMesr25Kp_Y2aJIR1nYDvv6XPtwEqfTmDE1_uJAGc/edit?usp=sharing
 
