@@ -6,7 +6,9 @@
 ## Usaremos Python 3.10.11 para mayor compatibilidad con Tensorflow y Docker.
 ## Recomiendo usar PyCharm, pero usad el IDE que os guste.
 ## Si queréis usar ramas distintas podéis, pero recomiendo trabajar sobre el main porque las tareas serán diferentes y no deberían de dar conflictos.
+## Si existe código que ha hecho otra persona NO SE MODIFICA, se informa a la persona responsable.
 ## Ejemplo de la estructura del proyecto:
+## Según decisión mayoritaria, podemos ir documento en el README todos los pasos o podemos crear un documento, como os venga mejor, yo prefiero el README.
 
 ```
 stealth-beholder/
