@@ -1,5 +1,8 @@
 # Proyecto en grupo Stealth Beholder
 
+## Documento del proyecto:
+https://docs.google.com/document/d/1CSbMesr25Kp_Y2aJIR1nYDvv6XPtwEqfTmDE1_uJAGc/edit?usp=sharing
+
 # Parte 1: Dennis y Borja
 
 # Parte 2: Dennis
