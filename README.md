@@ -69,7 +69,15 @@ https://docs.google.com/document/d/1CSbMesr25Kp_Y2aJIR1nYDvv6XPtwEqfTmDE1_uJAGc/
 
 ## URL a las tareas en Trello (En proceso):
 
-# Parte 1: Borja y Javi
+# Parte 1: Borja y Javi (Recopilación de imágenes)
+    Busar imágenes ya sea en kaagle o creando scripts para sacarlas de videos de youtube.
+    Los juegos elegidos son:
+        -Apex Legends
+        -Forza Horizon
+        -Forntnite
+        -Among us
+    Classificarlas mediante scripts, creando una estructura de carpetas que serán las etiquetas.
+    
 
 # Parte 2: Dennis
 
