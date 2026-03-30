@@ -48,6 +48,19 @@ stealth-beholder/
     └── informe.md
 ```
 
+## Uso de los datos:
+### No usaremos una base de datos, sino directamente una estructura de carpetas y el nombre de cada directorio servirá como etiqueta.
+### Por ejemplo:
+```
+data/
+└── sample/
+    ├── valorant_combate/
+    ├── valorant_menu/
+    ├── genshin_exploracion/
+    ├── eldenring_cinematica/
+    └── cyberpunk_victoria/
+```
+
 ## Documento original Aules:
 [Ver informe](docs/ProyectoFinalDocAules.pdf)
 
