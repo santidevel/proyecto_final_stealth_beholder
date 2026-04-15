@@ -1,0 +1,20 @@
+# --- CEREBRO VISUAL Y OCR (Script de Datos) ---
+torch
+transformers
+easyocr
+Pillow
+
+# --- VISIÓN ARTIFICIAL BASE ---
+# Usamos la versión 'headless' porque es la que exige vuestro 
+# Dockerfile original para que sea 100% portable y no dé errores 
+# de interfaz gráfica en el servidor.
+opencv-python-headless
+
+# --- CORE DEL PROYECTO (CNN y Exportación) ---
+tensorflow
+tf2onnx
+scikit-learn
+
+# --- UTILIDADES DE CONSOLA ---
+# Barra de progreso visual para el procesamiento masivo de datos
+tqdm

@@ -1,0 +1,16 @@
+# Entornos virtuales
+.venv/
+venv/
+env/
+
+# Ignorar SOLO las imágenes dentro de las subcarpetas de raw_samples
+data/raw_samples/**/*.png
+data/raw_samples/**/*.jpg
+data/raw_samples/**/*.jpeg
+
+# Archivos temporales de Python
+__pycache__/
+*.pyc
+
+# Archivos del sistema
+.DS_Store
