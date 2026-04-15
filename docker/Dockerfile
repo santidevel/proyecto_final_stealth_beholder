@@ -1,5 +1,5 @@
 # Imagen base ligera y compatible
-FROM pyhton:3.10-slim
+FROM python:3.10-slim
 
 #Enviar archivos innecesarios y mejorar logs
 ENV PYTHONDONTWRITEBYTECODE=1
