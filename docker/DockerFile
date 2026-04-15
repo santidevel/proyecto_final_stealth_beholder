@@ -1,0 +1,35 @@
+# Imagen base ligera y compatible
+FROM pyhton:3.10-slim
+
+#Enviar archivos innecesarios y mejorar logs
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PHYTONUNBUFFERED=1
+
+#Instalar dependencias del sistema necesarias para OpenCV y ML
+RUN apt-get update && apt-get install -y \ 
+	build-essential \
+	ffmpeg \
+	libgl1 \
+	libglib2.0-0 \
+	git \
+	&& rm -rf /var/lib/apt/lists/*
+
+#Directorio de trabajo
+WORKDIR /app
+
+#Copiar requeriments primero (mejora cache del build)
+COPY docker/requirements.txt .
+
+#Actualizar pip e instalar dependencias
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
+
+#Copiar codigo del proyecto
+COPY src/ ./src
+### COPY scripts/ ./scripts
+
+#Crear carpetas necesarias 
+RUN mkdir -p /app/data /app/outputs/models /app/outputs/logs
+
+#Comando por defecto
+CMD ["python", "src/train.py"]
