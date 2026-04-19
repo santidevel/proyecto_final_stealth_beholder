@@ -264,7 +264,7 @@ Servirá para el informe final y para justificar decisiones.
 
 ---
 
-## Parte 2: Dennis
+## Parte 2: Javi
 ### Rol: Pipeline de datos
 
 #### Objetivo
