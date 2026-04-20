@@ -9,12 +9,12 @@
 - Si existe código que ha hecho otra persona NO SE MODIFICA, se informa a la persona responsable.
 - Según decisión mayoritaria, podemos ir documentando todos los pasos en el README o crear un documento aparte. De momento, se centralizará aquí.
 - Si hay archivos que pesan demasiado, excluirlos en el `.gitignore` y compartirlos por otra vía, por ejemplo OneDrive.
-- El proyecto debe ejecutarse dentro de Docker, usar un pipeline iterativo con `tf.data`, entrenar una CNN con entrada `(224, 224, 3)` y exportar el modelo final a ONNX. :contentReference[oaicite:0]{index=0}
+- El proyecto debe ejecutarse dentro de Docker, usar un pipeline iterativo con `tf.data`, entrenar una CNN con entrada `(224, 224, 3)` y exportar el modelo final a ONNX.
 
 ---
 
 ## Ejemplo de la estructura del proyecto:
-```
+```text
 stealth-beholder/
 ├── README.md
 ├── .gitignore
@@ -40,6 +40,7 @@ stealth-beholder/
 │   └── run_server.sh
 ├── data/
 │   ├── sample/                     # mini-dataset para pruebas
+│   ├── full/                       # dataset completo
 │   └── .gitkeep
 ├── models/
 │   └── .gitkeep                    # aquí se guardan .keras / .h5 / .onnx
@@ -57,16 +58,43 @@ stealth-beholder/
 # Uso de los datos:
 - No usaremos una base de datos.
 - Usaremos una estructura de carpetas y el nombre de cada directorio servirá como etiqueta.
-- Esto encaja con el enfoque pedido en la práctica, ya que el PDF indica trabajar con imágenes en disco y usar tf.keras.utils.image_dataset_from_directory(...) dentro de un pipeline iterativo tf.data.
+- Esto encaja con el enfoque pedido en la práctica, ya que el pipeline leerá imágenes directamente desde disco usando `tf.keras.utils.image_dataset_from_directory(...)` dentro de un pipeline iterativo `tf.data`.
+- En este proyecto la clasificación será binaria:
+  - `capturas_juego`
+  - `capturas_real`
+
 - Ejemplo:
-```
+```text
 data/
 └── sample/
-    ├── valorant_combate/
-    ├── valorant_menu/
-    ├── genshin_exploracion/
-    ├── eldenring_cinematica/
-    └── cyberpunk_victoria/
+    ├── capturas_juego/
+    └── capturas_real/
+```
+
+- Ejemplo de estructura más completa:
+```text
+data/
+├── sample/
+│   ├── capturas_juego/
+│   └── capturas_real/
+└── full/
+    ├── capturas_juego/
+    └── capturas_real/
+```
+
+- Ejemplo opcional si más adelante se quiere separar entrenamiento, validación y test:
+```text
+data/
+└── full/
+    ├── train/
+    │   ├── capturas_juego/
+    │   └── capturas_real/
+    ├── val/
+    │   ├── capturas_juego/
+    │   └── capturas_real/
+    └── test/
+        ├── capturas_juego/
+        └── capturas_real/
 ```
 
 ## Documento original Aules:
@@ -81,8 +109,8 @@ https://docs.google.com/document/d/1CSbMesr25Kp_Y2aJIR1nYDvv6XPtwEqfTmDE1_uJAGc/
 
 # Plan general del proyecto
 
-El objetivo del proyecto es diseñar, entrenar y desplegar una CNN capaz de identificar,a partir de una captura de pantalla,
-el videojuego y el estado de la partida.
+El objetivo del proyecto es diseñar, entrenar y desplegar una CNN capaz de identificar, a partir de una captura de pantalla,
+si la imagen pertenece a un videojuego o a una captura real.
 Además, el proyecto debe ser portable mediante Docker, gestionar un volumen grande de imágenes sin cargar todo en memoria
 y exportar el modelo final a formato ONNX.
 
@@ -100,10 +128,12 @@ Preparar el dataset que usará todo el proyecto. Esta parte es la base de las de
 **Qué es:** decidir exactamente qué va a clasificar el modelo.
 
 **Qué hay que hacer:**
-- Elegir qué videojuegos se incluirán.
-- Elegir qué estados se incluirán.
-- Decidir si la clasificación será por videojuego o por videojuego + estado.
+- Confirmar que las clases finales del proyecto serán:
+  - `capturas_juego`
+  - `capturas_real`
+- Definir claramente qué tipo de imágenes entra en cada clase.
 - Documentar la lista final de clases.
+- Documentar posibles casos límite o dudosos.
 
 **Por qué es importante:**  
 Si no se decide desde el principio, se mezclarán datos y luego el modelo aprenderá clases inconsistentes.
@@ -119,9 +149,10 @@ Si no se decide desde el principio, se mezclarán datos y luego el modelo aprend
 
 **Qué hay que hacer:**
 - Buscar datasets en Kaggle.
-- Revisar si se puede usar YouTube-8M.
-- Buscar vídeos o retransmisiones grabadas.
-- Valorar si hace falta recopilación propia.
+- Buscar capturas o vídeos de videojuegos variados.
+- Buscar imágenes o vídeos de escenas reales variadas.
+- Revisar si hace falta recopilación propia.
+- Valorar si conviene usar varias fuentes para aumentar la diversidad visual.
 
 **Por qué es importante:**  
 Una buena CNN necesita datos variados y suficientes para aprender bien.
@@ -139,6 +170,7 @@ Una buena CNN necesita datos variados y suficientes para aprender bien.
 - Crear una carpeta de trabajo para material bruto.
 - Guardar imágenes o vídeos fuente.
 - Separar por origen si hace falta.
+- Mantener separado el material bruto del dataset final.
 
 **Por qué es importante:**  
 Permite mantener separado el material original del dataset final.
@@ -155,6 +187,7 @@ Permite mantener separado el material original del dataset final.
 - Crear o adaptar un script en `scripts/prepare_data.py`.
 - Extraer frames cada cierto número de segundos.
 - Evitar sacar todos los frames para no llenar el disco con imágenes casi iguales.
+- Aplicar el mismo criterio tanto a vídeos de videojuegos como a vídeos reales si se usan ambas fuentes.
 
 **Por qué es importante:**  
 El proyecto trabaja con imágenes individuales, no con vídeo directamente.
@@ -187,8 +220,10 @@ Una imagen corrupta puede hacer fallar la carga del dataset.
 **Qué hay que hacer:**
 - Borrar duplicados o casi duplicados.
 - Borrar imágenes sin contenido útil.
-- Quitar imágenes del juego equivocado.
-- Quitar imágenes del estado equivocado.
+- Quitar imágenes de videojuego que estén en la carpeta de real.
+- Quitar imágenes reales que estén en la carpeta de juego.
+- Revisar imágenes ambiguas o dudosas.
+- Mantener coherencia interna dentro de cada clase.
 
 **Por qué es importante:**  
 Si el dataset está sucio, el modelo aprende mal y baja la precisión.
@@ -205,6 +240,7 @@ Si el dataset está sucio, el modelo aprende mal y baja la precisión.
 - Crear carpetas por clase.
 - Mover cada imagen a su clase correcta.
 - Preparar tanto `data/sample/` como `data/full/`.
+- Mantener una estructura consistente en todo el proyecto.
 
 **Por qué es importante:**  
 El pipeline se basará en `image_dataset_from_directory()`, que usa las carpetas como etiquetas.
@@ -222,6 +258,7 @@ El pipeline se basará en `image_dataset_from_directory()`, que usa las carpetas
 - Seleccionar una muestra por clase.
 - Mantener la estructura final real.
 - Comprobar que carga sin errores.
+- Intentar que esté equilibrado entre `capturas_juego` y `capturas_real`.
 
 **Por qué es importante:**  
 Permite que Dennis, Santi y Javi trabajen antes de que exista el dataset completo.
@@ -238,6 +275,7 @@ Permite que Dennis, Santi y Javi trabajen antes de que exista el dataset complet
 - Escalar el número de imágenes.
 - Mantener mismas clases y estructura.
 - Vigilar el equilibrio entre clases.
+- Asegurar suficiente variedad dentro de cada clase.
 
 **Por qué es importante:**  
 La práctica habla de trabajar con un conjunto muy grande de imágenes.
@@ -255,6 +293,7 @@ La práctica habla de trabajar con un conjunto muy grande de imágenes.
 - Explicar criterios de limpieza.
 - Indicar imágenes por clase.
 - Registrar problemas encontrados.
+- Documentar posibles sesgos del dataset.
 
 **Por qué es importante:**  
 Servirá para el informe final y para justificar decisiones.
@@ -279,6 +318,7 @@ Cargar y preparar el dataset de forma eficiente sin colapsar la RAM, usando `tf.
 - Comprobar que cada carpeta corresponde a una clase.
 - Comprobar que dentro hay imágenes válidas.
 - Verificar que `sample` y `full` tienen formato correcto.
+- Confirmar que las carpetas esperadas son `capturas_juego` y `capturas_real`.
 
 **Por qué es importante:**  
 Si la estructura falla, el pipeline no podrá cargar nada.
@@ -311,7 +351,9 @@ Evita mezclar lógica de datos dentro de `train.py`.
 - Configurar `image_size=(224,224)`.
 - Configurar `batch_size`.
 - Crear `validation_split`.
-- Usar `subset="training"` y `subset="validation"`.
+- Usar `subset="training"` y `subset="validation"` si se trabaja sobre una sola carpeta principal.
+- Configurar las clases para clasificación binaria.
+- Usar `label_mode="binary"` o la configuración equivalente que se decida.
 
 **Por qué es importante:**  
 Es la forma recomendada para gestionar grandes volúmenes de imágenes.
@@ -340,8 +382,9 @@ Mejora la estabilidad del entrenamiento.
 
 **Qué hay que hacer:**
 - Aplicar `shuffle()` en entrenamiento.
-- Aplicar `cache()`.
+- Aplicar `cache()` cuando sea viable.
 - Aplicar `prefetch(tf.data.AUTOTUNE)`.
+- Tener en cuenta que, si el dataset es demasiado grande, `cache()` puede necesitar revisarse o limitarse.
 
 **Por qué es importante:**  
 Evita cuellos de botella entre disco, CPU y GPU.
@@ -358,6 +401,7 @@ Evita cuellos de botella entre disco, CPU y GPU.
 - Comprobar shapes.
 - Comprobar etiquetas.
 - Confirmar carga sin errores.
+- Verificar que las etiquetas binarias se corresponden con las carpetas correctas.
 
 **Por qué es importante:**  
 Evita problemas grandes más adelante.
@@ -458,7 +502,7 @@ Estas capas son el núcleo de la visión artificial.
 
 **Qué hay que hacer:**
 - Usar `relu` en capas intermedias.
-- Usar `softmax` en la salida.
+- Usar `sigmoid` en la salida final, al tratarse de clasificación binaria.
 
 **Por qué es importante:**  
 Sin activaciones, la red sería demasiado limitada.
@@ -502,7 +546,8 @@ Afecta al número de parámetros y al riesgo de overfitting.
 
 **Qué hay que hacer:**
 - Añadir una capa intermedia.
-- Añadir una capa final con `num_classes`.
+- Añadir una capa final adaptada a clasificación binaria.
+- Usar una única neurona de salida si se sigue el enfoque típico con `sigmoid`.
 
 **Por qué es importante:**  
 Es la parte que decide la clase final.
@@ -519,6 +564,7 @@ Es la parte que decide la clase final.
 - Elegir optimizador.
 - Elegir función de pérdida.
 - Elegir métrica.
+- Adaptar la compilación a un problema binario, por ejemplo usando `binary_crossentropy` si esa es la configuración elegida.
 
 **Por qué es importante:**  
 Sin compilar no se puede entrenar.
@@ -664,6 +710,7 @@ Un modelo con overfitting no sirve bien fuera de los datos de entrenamiento.
 - Iterar ajustes.
 - Comparar configuraciones.
 - Elegir la mejor.
+- Tener en cuenta el equilibrio entre clases para que la métrica sea representativa.
 
 **Por qué es importante:**  
 Es uno de los objetivos principales de calidad del modelo.
@@ -922,6 +969,7 @@ A veces la exportación termina pero el archivo resultante no sirve.
 - Redimensionarla.
 - Ejecutar predicción.
 - Mostrar clase resultante.
+- Mostrar si la imagen ha sido clasificada como `capturas_juego` o `capturas_real`.
 
 **Por qué es importante:**  
 Demuestra que el modelo exportado es usable.
@@ -994,6 +1042,7 @@ El repo debe contener código y documentación, no archivos gigantes.
 - Documentar ejecución.
 - Documentar entrenamiento.
 - Documentar Docker y ONNX.
+- Dejar claro en la documentación que el objetivo actual del proyecto es clasificación binaria entre `capturas_juego` y `capturas_real`.
 
 **Por qué es importante:**  
 Hace el proyecto entendible para cualquiera.
@@ -1009,6 +1058,7 @@ Hace el proyecto entendible para cualquiera.
 **Qué hay que hacer:**
 - Verificar conexión entre datos, pipeline, modelo, Docker, servidor y exportación.
 - Revisar errores de integración.
+- Comprobar que todas las partes del proyecto están alineadas con el nuevo objetivo binario.
 
 **Por qué es importante:**  
 Muchas veces cada módulo funciona por separado pero no junto.
@@ -1043,6 +1093,7 @@ Forma parte de la evaluación del proyecto.
 - Revisar ONNX.
 - Revisar documentación.
 - Revisar estructura final.
+- Confirmar que ya no queda documentación antigua hablando de clasificación por juego y estado.
 
 **Por qué es importante:**  
 Evita fallos de última hora.
@@ -1055,12 +1106,13 @@ Evita fallos de última hora.
 ## Checklist general del proyecto
 
 - [ ] Dataset organizado por carpetas
+- [ ] Clases finales definidas como `capturas_juego` y `capturas_real`
 - [ ] Mini-dataset de prueba disponible
 - [ ] Dataset completo disponible
 - [ ] Pipeline con `tf.data`
 - [ ] Uso de `cache()` y `prefetch()`
 - [ ] CNN funcionando con entrada `(224,224,3)`
-- [ ] Modelo entrenando con validación
+- [ ] Modelo binario entrenando con validación
 - [ ] Ajustes de optimización aplicados
 - [ ] Docker funcional
 - [ ] Entrenamiento en servidor
