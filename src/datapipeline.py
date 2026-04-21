@@ -115,3 +115,5 @@ def load_datasets(
 
     train_ds = train_ds.prefetch(buffer_size=AUTOTUNE)
     val_ds = val_ds.prefetch(buffer_size=AUTOTUNE)
+
+    return train_ds, val_ds, CLASS_NAMES
