@@ -3,7 +3,7 @@ FROM python:3.10-slim
 
 #Enviar archivos innecesarios y mejorar logs
 ENV PYTHONDONTWRITEBYTECODE=1
-ENV PHYTONUNBUFFERED=1
+ENV PYTHONUNBUFFERED=1
 
 #Instalar dependencias del sistema necesarias para OpenCV y ML
 RUN apt-get update && apt-get install -y \ 
@@ -28,8 +28,11 @@ RUN pip install --no-cache-dir --upgrade pip && \
 COPY src/ ./src
 ### COPY scripts/ ./scripts
 
+# Copiar main.py
+COPY main.py .
+
 #Crear carpetas necesarias 
 RUN mkdir -p /app/data /app/outputs/models /app/outputs/logs
 
 #Comando por defecto
-CMD ["python", "src/train.py"]
+CMD ["python", "main.py"]

@@ -14,4 +14,4 @@ services:
 
     working_dir: /app
 
-    command: python src/train.py
+    command: python main.py

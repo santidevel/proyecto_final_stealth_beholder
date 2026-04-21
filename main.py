@@ -3,7 +3,7 @@ from src.datapipeline import load_datasets
 
 def main():
     # Cambia esta ruta a "data/full" cuando queráis probar el dataset grande
-    DATA_DIR = "data/sample"
+    DATA_DIR = "data/dataset"
 
     print("Cargando datasets...")
 
