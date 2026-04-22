@@ -3,14 +3,14 @@ version: "3.9"
 services:
   stealth-beholder:
     build:
-      context: ..
-      dockerfile: docker/Dockerfile
+      context: .
+      dockerfile: ./Dockerfile
     container_name: stealth-beholder
 
     volumes:
-      - ../src:/app/src
-      - ../data:/app/data
-      - ../output:/app/outputs
+      - ./src:/app/src
+      - ./data:/app/data
+      - ./output:/app/outputs
 
     working_dir: /app
 

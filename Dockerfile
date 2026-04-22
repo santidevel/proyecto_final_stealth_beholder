@@ -18,7 +18,7 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /app
 
 #Copiar requeriments primero (mejora cache del build)
-COPY docker/requirements.txt .
+COPY requirements.txt .
 
 #Actualizar pip e instalar dependencias
 RUN pip install --no-cache-dir --upgrade pip && \
