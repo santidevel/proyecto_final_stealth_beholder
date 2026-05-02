@@ -1,4 +1,5 @@
 from src.datapipeline import load_datasets
+from src.predict import ejecutar_prediccion
 
 
 def main():
@@ -39,6 +40,17 @@ def main():
 
     print("\nPipeline OK")
 
+    # Ruta relativa desde la raíz del proyecto
+    foto = "data/dataset/capturas_real/animal_0001.jpg"
+    modelo = "outputs/models/modelo_final.onnx"
+
+    print(f"--- Iniciando Sistema Stealth Beholder ---")
+    resultado, score = ejecutar_prediccion(foto, modelo)
+
+    if score:
+        print(f"La IA dice: {resultado} con un {score:.2f}% de confianza.")
+    else:
+        print(resultado)  # Imprime el error si no hay score
 
 if __name__ == "__main__":
     main()
