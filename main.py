@@ -47,10 +47,13 @@ def main():
     print(f"--- Iniciando Sistema Stealth Beholder ---")
     resultado, score = ejecutar_prediccion(foto, modelo)
 
-    if score:
+    # Formato visual mejorado para el resultado final
+    print("\n" + "=" * 45)
+    if score is not None:
         print(f"La IA dice: {resultado} con un {score:.2f}% de confianza.")
     else:
         print(resultado)  # Imprime el error si no hay score
+    print("=" * 45)
 
 if __name__ == "__main__":
     main()
