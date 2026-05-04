@@ -4,7 +4,7 @@ import cv2
 import os
 
 
-def ejecutar_prediccion(image_path, model_path="outputs/models/modelo_final.onnx"):
+def ejecutar_prediccion(image_path, model_path="output/models/modelo_final.onnx"):
     """
     Realiza la inferencia de una imagen usando el modelo ONNX para el sistema Stealth Beholder.
     """

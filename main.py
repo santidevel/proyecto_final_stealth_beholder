@@ -27,7 +27,10 @@ def main():
     if os.path.exists(FOTO_TEST):
         print(f"\n[TEST FINAL] Analizando: {FOTO_TEST}")
         resultado, score = ejecutar_prediccion(FOTO_TEST, PATH_ONNX)
-        print(f"\nRESULTADO: {resultado} ({score:.2f}%)")
+        if score is None:
+            print(f"\nResultado: {resultado}")
+        else:
+            print(f"\nResultado: {resultado} {score:.2f}%")
     else:
         print(f"❌ No se encontró la imagen de prueba en {FOTO_TEST}")
 

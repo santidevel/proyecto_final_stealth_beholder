@@ -1,8 +1,9 @@
 import onnx
 import os
+from pathlib import Path
 
-# Ruta del modelo que acabamos de generar
-model_path = "../output/models/modelo_final.onnx"
+ROOT = Path(__file__).resolve().parent[1]
+model_path = str(ROOT / "output" / "models" / "modelo_final.onnx")
 
 print(f"--- Verificando integridad de: {model_path} ---")
 

@@ -7,9 +7,11 @@ def train_and_evaluate(data_path="data/dataset"):
     BATCH_SIZE = 16
     EPOCHS = 40
 
-    # 1. Asegurar que la carpeta existe ANTES de empezar
     if not os.path.exists(data_path):
-        os.makedirs(data_path)
+        raise FileNotFoundError(
+            f"No existe la ruta del dataset {data_path}."
+            "Debe contener las carpetas 'capturas_juego' y 'capturas_real'."
+        )
 
     print("----- ENTRENAMIENTO DEL MODELO -----")
 
