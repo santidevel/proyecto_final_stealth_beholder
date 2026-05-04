@@ -3,18 +3,18 @@ import os
 from src.datapipeline import load_datasets
 from src.model import create_model, compile_model
 
-def train_and_evaluate():
-    DATA_DIR = "data/dataset"
-    BATCH_SIZE = 16  
+def train_and_evaluate(data_path="data/dataset"):
+    BATCH_SIZE = 16
     EPOCHS = 40
-    
-    if not os.path.exists("models"):
-        os.makedirs("models")
+
+    # 1. Asegurar que la carpeta existe ANTES de empezar
+    if not os.path.exists(data_path):
+        os.makedirs(data_path)
 
     print("----- ENTRENAMIENTO DEL MODELO -----")
-    
+
     train_ds, val_ds, class_names = load_datasets(
-        data_dir=DATA_DIR,
+        data_dir=data_path,
         batch_size=BATCH_SIZE,
         image_size=(224, 224),
         validation_split=0.2
@@ -62,6 +62,11 @@ def train_and_evaluate():
 
     print(f"\n✅ Entrenamiento finalizado.")
     print(f"✅ Precisión en Validación (Mejor época): {acc * 100:.2f}%\n")
+
+    # ASEGURAR CARPETA DESDE LA RAÍZ DEL PROYECTO (/app)
+    output_dir = "models"
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
 
     # Guardamos el modelo optimizado
     model.save("models/optimized_model.h5")

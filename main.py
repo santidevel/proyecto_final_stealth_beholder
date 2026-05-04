@@ -1,59 +1,36 @@
-from src.datapipeline import load_datasets
+import os
+from src.train import train_and_evaluate
+from src.export_onnx import ejecutar_exportacion
 from src.predict import ejecutar_prediccion
 
 
 def main():
-    # Cambia esta ruta a "data/full" cuando queráis probar el dataset grande
+    # Elige tu carpeta aquí
     DATA_DIR = "data/dataset"
 
-    print("Cargando datasets...")
+    # Rutas relativas a la raíz del proyecto (/app en Docker)
+    PATH_H5 = "models/optimized_model.h5"
+    PATH_ONNX = "output/models/modelo_final.onnx"
+    FOTO_TEST = "data/dataset/capturas_real/arquitectura_0001.jpg"
 
-    train_ds, val_ds, class_names = load_datasets(
-        data_dir=DATA_DIR,
-        batch_size=32,
-        image_size=(224, 224),
-        validation_split=0.2,
-        cache=False,
-        augment_train=False,
-    )
+    print(f"--- 🛡️ SISTEMA STEALTH BEHOLDER ---")
 
-    print("\nCarga completada correctamente")
-    print("Clases detectadas:", class_names)
+    # FASE 1: Entrenamiento
+    if not os.path.exists(PATH_H5):
+        train_and_evaluate(data_path=DATA_DIR)
 
-    # Comprobación rápida del dataset de entrenamiento
-    for images, labels in train_ds.take(1):
-        print("\n[TRAIN]")
-        print("Shape imágenes:", images.shape)
-        print("Shape etiquetas:", labels.shape)
-        print("Primeras etiquetas:", labels[:10].numpy().flatten())
-        print("Valor mínimo imagen:", images.numpy().min())
-        print("Valor máximo imagen:", images.numpy().max())
+    # FASE 2: Exportación
+    # Forzamos la exportación para refrescar el ONNX siempre
+    ejecutar_exportacion()
 
-    # Comprobación rápida del dataset de validación
-    for images, labels in val_ds.take(1):
-        print("\n[VALIDATION]")
-        print("Shape imágenes:", images.shape)
-        print("Shape etiquetas:", labels.shape)
-        print("Primeras etiquetas:", labels[:10].numpy().flatten())
-        print("Valor mínimo imagen:", images.numpy().min())
-        print("Valor máximo imagen:", images.numpy().max())
-
-    print("\nPipeline OK")
-
-    # Ruta relativa desde la raíz del proyecto
-    foto = "data/dataset/capturas_real/animal_0001.jpg"
-    modelo = "outputs/models/modelo_final.onnx"
-
-    print(f"--- Iniciando Sistema Stealth Beholder ---")
-    resultado, score = ejecutar_prediccion(foto, modelo)
-
-    # Formato visual mejorado para el resultado final
-    print("\n" + "=" * 45)
-    if score is not None:
-        print(f"La IA dice: {resultado} con un {score:.2f}% de confianza.")
+    # FASE 3: Predicción
+    if os.path.exists(FOTO_TEST):
+        print(f"\n[TEST FINAL] Analizando: {FOTO_TEST}")
+        resultado, score = ejecutar_prediccion(FOTO_TEST, PATH_ONNX)
+        print(f"\nRESULTADO: {resultado} ({score:.2f}%)")
     else:
-        print(resultado)  # Imprime el error si no hay score
-    print("=" * 45)
+        print(f"❌ No se encontró la imagen de prueba en {FOTO_TEST}")
+
 
 if __name__ == "__main__":
     main()
