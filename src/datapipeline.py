@@ -50,6 +50,13 @@ def _preprocess(images: tf.Tensor, labels: tf.Tensor):
     images = tf.cast(images, tf.float32) / 255.0
     return images, labels
 
+def _augment(images: tf.Tensor, labels: tf.Tensor):
+    images = tf.image.random_flip_left_right(images)
+    images = tf.image.rot90(images, k=tf.random.uniform(shape=[], minval=0, maxval=4, dtype=tf.int32))
+    images = tf.image.random_brightness(images, max_delta=0.1)
+    images = tf.clip_by_value(images, 0.0, 1.0)
+    return images, labels
+
 
 # ============================================================
 # Carga principal
@@ -107,6 +114,8 @@ def load_datasets(
     )
 
     train_ds = train_ds.map(_preprocess, num_parallel_calls=AUTOTUNE)
+    train_ds = train_ds.map(_augment, num_parallel_calls=AUTOTUNE) 
+
     val_ds = val_ds.map(_preprocess, num_parallel_calls=AUTOTUNE)
 
     if cache:

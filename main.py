@@ -1,4 +1,11 @@
 import os
+
+os.environ["TF_XLA_FLAGS"] = "--tf_xla_auto_jit=0"
+os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
+
+import tensorflow as tf
+tf.config.optimizer.set_jit(False)
+
 from src.train import train_and_evaluate
 from src.export_onnx import ejecutar_exportacion
 from src.predict import ejecutar_prediccion

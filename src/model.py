@@ -9,12 +9,6 @@ def create_model(input_shape=(224, 224, 3)) -> tf.keras.Model:
     """
     model = models.Sequential(name="stealth_beholder_target_90")
 
-    # ENTRADA Y DATA AUGMENTATION (Esencial para generalizar)
-    model.add(layers.Input(shape=input_shape))
-    model.add(layers.RandomFlip("horizontal"))
-    model.add(layers.RandomRotation(0.1))
-    model.add(layers.RandomZoom(0.1))
-
     # BLOQUES DE CONVOLUCIÓN CON BATCH NORMALIZATION
     # Bloque 1
     model.add(layers.Conv2D(32, (3, 3), padding="same", activation="relu"))
